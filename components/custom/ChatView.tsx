@@ -30,7 +30,7 @@ function ChatView() {
   const messagesContext = useContext(MessagesContext);
   const [loading, setLoading] = useState(false);
   const UpdateMessages = useMutation(api.workspace.UpdateMessages);
-  const UpdateToken = useMutation(api.users.UpdateToken);
+  const UpdateTokens = useMutation(api.users.UpdateToken);
   const { toggleSidebar } = useSidebar();
 
   if (!messagesContext || !userDetailContext) {
@@ -100,8 +100,17 @@ function ChatView() {
       workspaceId: id as Id<"workspace">,
     });
 
-    const token = countToken(JSON.stringify(aiResp));
+    const token =
+      Number(userDetail?.token) - Number(countToken(JSON.stringify(aiResp)));
     //Update Tokens in DB
+    if (userDetail && userDetail._id) {
+      await UpdateTokens({
+        userId: userDetail._id,
+        token: token,
+      });
+    } else {
+      console.warn("Cannot update token: User not authenticated");
+    }
 
     setLoading(false);
   };

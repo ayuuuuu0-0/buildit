@@ -18,6 +18,8 @@ import { useConvex, useMutation } from "convex/react";
 import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { Loader2Icon } from "lucide-react";
+import { UserDetailContext } from "@/context/UserDetailContext";
+import { countToken } from "./ChatView";
 
 interface MessagesContextType {
   messages: Array<{
@@ -38,6 +40,13 @@ function CodeView() {
   const { messages, setMessages } = messagesContext;
   const convex = useConvex();
   const [loading, setLoading] = useState(false);
+  const UpdateTokens = useMutation(api.users.UpdateToken);
+  const userDetailContext = useContext(UserDetailContext);
+
+  if (!userDetailContext) {
+    throw new Error("Hero must be used within required providers");
+  }
+  const { userDetail, setUserDetail } = userDetailContext;
 
   useEffect(() => {
     if (workspaceId) {
@@ -89,6 +98,19 @@ function CodeView() {
           workspaceId: workspaceId,
           files: aiResp?.files,
         });
+
+        const token =
+          Number(userDetail?.token) -
+          Number(countToken(JSON.stringify(aiResp)));
+
+        if (userDetail && userDetail._id) {
+          await UpdateTokens({
+            userId: userDetail._id,
+            token: token,
+          });
+        }
+
+        setActiveTab("code");
         setLoading(false);
       } else {
         console.error("Workspace ID is undefined");

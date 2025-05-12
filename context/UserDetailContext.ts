@@ -6,6 +6,9 @@ export interface userDetail {
   email: string;
   _id: Id<"users">;
   picture: string;
+  uid: string;
+  _creationTime: number;
+  token?: number;
 }
 
 export interface UserDetailContextType {
