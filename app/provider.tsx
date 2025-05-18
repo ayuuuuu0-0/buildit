@@ -12,6 +12,7 @@ import { UserDetailContext, userDetail } from "@/context/UserDetailContext";
 import { api } from "@/convex/_generated/api";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import AppSideBar from "@/components/custom/AppSideBar";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 interface ProviderProps {
   children: ReactNode;
@@ -63,25 +64,31 @@ function Provider({ children }: ProviderProps) {
       <GoogleOAuthProvider
         clientId={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID_KEY || ""}
       >
-        <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
-          <MessagesContext.Provider value={{ messages, setMessages }}>
-            <NextThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="relative min-h-screen">
-                <AuroraBackground className="absolute inset-0 z-0">
-                  <div className="sr-only"></div>
-                </AuroraBackground>
-                <SidebarProvider defaultOpen={false}>
-                  <LayoutWithSidebar>{children}</LayoutWithSidebar>
-                </SidebarProvider>
-              </div>
-            </NextThemeProvider>
-          </MessagesContext.Provider>
-        </UserDetailContext.Provider>
+        <PayPalScriptProvider
+          options={{
+            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+          }}
+        >
+          <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
+            <MessagesContext.Provider value={{ messages, setMessages }}>
+              <NextThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <div className="relative min-h-screen">
+                  <AuroraBackground className="absolute inset-0 z-0">
+                    <div className="sr-only"></div>
+                  </AuroraBackground>
+                  <SidebarProvider defaultOpen={false}>
+                    <LayoutWithSidebar>{children}</LayoutWithSidebar>
+                  </SidebarProvider>
+                </div>
+              </NextThemeProvider>
+            </MessagesContext.Provider>
+          </UserDetailContext.Provider>
+        </PayPalScriptProvider>
       </GoogleOAuthProvider>
     </ConvexProvider>
   );

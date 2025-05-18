@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { Id } from "@/convex/_generated/dataModel";
 import { MessagesContext } from "@/context/MessagesContext";
-import { UserDetailContext } from "@/context/UserDetailContext";
+import { userDetail, UserDetailContext } from "@/context/UserDetailContext";
 import Colors from "@/data/Colors";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -14,6 +14,7 @@ import Prompt from "@/data/Prompt";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import { useSidebar } from "../ui/sidebar";
+import { toast } from "sonner";
 
 export const countToken = (inputText: string): number => {
   return inputText
@@ -32,6 +33,7 @@ function ChatView() {
   const UpdateMessages = useMutation(api.workspace.UpdateMessages);
   const UpdateTokens = useMutation(api.users.UpdateToken);
   const { toggleSidebar } = useSidebar();
+  type UserDetail = typeof userDetail;
 
   if (!messagesContext || !userDetailContext) {
     throw new Error("Hero must be used within required providers");
@@ -102,6 +104,14 @@ function ChatView() {
 
     const token =
       Number(userDetail?.token) - Number(countToken(JSON.stringify(aiResp)));
+
+    if (userDetail) {
+      setUserDetail({
+        ...userDetail,
+        token: token,
+      });
+    }
+
     //Update Tokens in DB
     if (userDetail && userDetail._id) {
       await UpdateTokens({
@@ -116,6 +126,10 @@ function ChatView() {
   };
 
   const onGenerate = (input: string) => {
+    if ((userDetail?.token ?? 0) < 10) {
+      toast("You dont have enough tokens!");
+      return;
+    }
     setMessages((prev) => [
       ...prev,
       {

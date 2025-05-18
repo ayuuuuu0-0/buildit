@@ -4,6 +4,7 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import Provider from "./provider";
 import ConvexClientProvider from "./ConvexClientProvider";
+import { Toaster } from "sonner";
 
 const teko = Poppins({
   subsets: ["latin"],
@@ -36,7 +37,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ConvexClientProvider>
-          <Provider>{children}</Provider>
+          <Provider>
+            {children}
+            <Toaster />
+          </Provider>
         </ConvexClientProvider>
       </body>
     </html>
