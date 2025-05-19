@@ -20,6 +20,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Loader2Icon } from "lucide-react";
 import { UserDetailContext } from "@/context/UserDetailContext";
 import { countToken } from "./ChatView";
+import SandpackaPreviewClient from "./SandpackPreviewClient";
+import { ActionContext } from "@/context/ActionContext";
 
 interface MessagesContextType {
   messages: Array<{
@@ -42,6 +44,7 @@ function CodeView() {
   const [loading, setLoading] = useState(false);
   const UpdateTokens = useMutation(api.users.UpdateToken);
   const userDetailContext = useContext(UserDetailContext);
+  const { action, setAction } = useContext(ActionContext);
 
   if (!userDetailContext) {
     throw new Error("Hero must be used within required providers");
@@ -53,6 +56,10 @@ function CodeView() {
       GetFiles();
     }
   }, [workspaceId]);
+
+  useEffect(() => {
+    setActiveTab("preview");
+  }, [action]);
 
   const GetFiles = async () => {
     setLoading(true);
@@ -158,10 +165,7 @@ function CodeView() {
             </>
           ) : (
             <>
-              <SandpackPreview
-                style={{ height: "60vh" }}
-                showNavigator={true}
-              />
+              <SandpackaPreviewClient />
             </>
           )}
         </SandpackLayout>

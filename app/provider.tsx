@@ -13,6 +13,8 @@ import { api } from "@/convex/_generated/api";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import AppSideBar from "@/components/custom/AppSideBar";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { ActionContext, Action } from "@/context/ActionContext";
+import { useRouter } from "next/router";
 
 interface ProviderProps {
   children: ReactNode;
@@ -35,6 +37,8 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
 
 function Provider({ children }: ProviderProps) {
   const [userDetail, setUserDetail] = useState<userDetail | null>(null);
+
+  const [action, setAction] = useState<Action | null>(null);
   const convex = useConvex();
 
   useEffect(() => {
@@ -71,21 +75,23 @@ function Provider({ children }: ProviderProps) {
         >
           <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
             <MessagesContext.Provider value={{ messages, setMessages }}>
-              <NextThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                enableSystem
-                disableTransitionOnChange
-              >
-                <div className="relative min-h-screen">
-                  <AuroraBackground className="absolute inset-0 z-0">
-                    <div className="sr-only"></div>
-                  </AuroraBackground>
-                  <SidebarProvider defaultOpen={false}>
-                    <LayoutWithSidebar>{children}</LayoutWithSidebar>
-                  </SidebarProvider>
-                </div>
-              </NextThemeProvider>
+              <ActionContext.Provider value={{ action, setAction }}>
+                <NextThemeProvider
+                  attribute="class"
+                  defaultTheme="dark"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  <div className="relative min-h-screen">
+                    <AuroraBackground className="absolute inset-0 z-0">
+                      <div className="sr-only"></div>
+                    </AuroraBackground>
+                    <SidebarProvider defaultOpen={false}>
+                      <LayoutWithSidebar>{children}</LayoutWithSidebar>
+                    </SidebarProvider>
+                  </div>
+                </NextThemeProvider>
+              </ActionContext.Provider>
             </MessagesContext.Provider>
           </UserDetailContext.Provider>
         </PayPalScriptProvider>
