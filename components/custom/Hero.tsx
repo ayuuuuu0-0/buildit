@@ -77,13 +77,13 @@ function Hero() {
     >
       {/* Header */}
       <div className="mx-auto">
-        <div className="text-center text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-white py-2 font-poppins">
+        <div className="text-center text-3xl sm:text-5xl md:text-7xl lg:text-6xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-white py-2 font-poppins">
           Ship Your Idea Today
         </div>
       </div>
       {/* Subheader */}
       <div className="mx-auto">
-        <p className="text-center text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-white py-1 font-poppins">
+        <p className="text-center text-4xl sm:text-6xl md:text-8xl lg:text-8xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-white py-1 font-poppins">
           With BuildIt!
         </p>
       </div>
@@ -97,7 +97,7 @@ function Hero() {
             <textarea
               placeholder="What do you want to build today?"
               onChange={(event) => setUserInput(event.target.value)}
-              className="outline-none bg-transparent w-full h-48 max-h-72 resize-none text-white placeholder:text-lg font-poppins rounded-xl p-3"
+              className="outline-none bg-transparent w-full h-32 max-h-48 resize-none text-white placeholder:text-lg font-poppins rounded-xl p-3"
             />
             {userInput && (
               <Button
